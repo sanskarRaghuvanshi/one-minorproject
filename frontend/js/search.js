@@ -14,14 +14,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("dashboardLink").href = `dashboard.html?workspace_id=${encodeURIComponent(workspaceId)}`;
   document.getElementById("backDashboard").href = `dashboard.html?workspace_id=${encodeURIComponent(workspaceId)}`;
 
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async function () {
-      await window.OneSpaceAuth.logout();
-      window.location.replace("login.html");
-    });
-  }
-
   const searchInput = document.getElementById("searchInput");
   const clearSearch = document.getElementById("clearSearch");
   const searchResults = document.getElementById("searchResults");
@@ -98,7 +90,8 @@ document.addEventListener("DOMContentLoaded", async function () {
           <h5 class="mb-3"><i class="bi bi-journal-text text-info me-2"></i>Notes (${results.notes.length})</h5>
           <div class="list-group">
             ${results.notes.map(function (n) {
-              const preview = highlightMatch(window.OneSpaceUtils.escapeHtml(n.body).substring(0, 200), query) + (n.body.length > 200 ? "…" : "");
+              const bodyStr = n.body || "";
+              const preview = highlightMatch(window.OneSpaceUtils.escapeHtml(bodyStr).substring(0, 200), query) + (bodyStr.length > 200 ? "…" : "");
               return `
                 <a href="notes.html?workspace_id=${encodeURIComponent(workspaceId)}" class="list-group-item list-group-item-action">
                   <h6 class="mb-1">${highlightMatch(window.OneSpaceUtils.escapeHtml(n.title), query)}</h6>
@@ -155,10 +148,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     searchResults.innerHTML = html;
   }
 
-  function highlightMatch(text, query) {
-    if (!query) return text;
-    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  function highlightMatch(escapedText, query) {
+    if (!query || !escapedText) return escapedText || "";
+    const escapedQuery = window.OneSpaceUtils.escapeHtml(query).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regex = new RegExp(`(${escapedQuery})`, "gi");
-    return text.replace(regex, '<mark class="bg-warning">$1</mark>');
+    return escapedText.replace(regex, '<mark class="bg-warning">$1</mark>');
   }
 });

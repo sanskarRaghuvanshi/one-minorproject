@@ -82,10 +82,39 @@ tailwind.config = {
 
   <!-- Files Content Area -->
   <div class="flex-1 overflow-y-auto px-lg pb-lg">
-    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Recent Files</span>
+    <!-- Hidden static file input with accept filters to avoid Windows OneDrive shell hang -->
+    <input type="file" id="filePickerInput" class="hidden" style="display:none;" accept="*/*" />
+
+    <!-- Drag & Drop Upload Zone -->
+    <div id="dropzone" class="mb-lg border-2 border-dashed border-outline-variant/70 hover:border-primary/70 rounded-xl p-lg bg-surface hover:bg-surface-container-low/50 transition-all cursor-pointer text-center group">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+          <span class="material-symbols-outlined text-[24px]">cloud_upload</span>
+        </div>
+        <div>
+          <h4 class="font-headline-sm text-sm font-semibold text-on-surface">Click to browse or drag and drop files here</h4>
+          <p class="text-xs text-on-surface-variant mt-0.5">Documents, Code, PDF, Images, or Archives (up to 10MB)</p>
+        </div>
+        <!-- Upload Progress Indicator -->
+        <div id="uploadProgress" class="d-none w-full max-w-xs mt-2">
+          <div class="flex justify-between items-center text-xs mb-1">
+            <span id="uploadFileName" class="font-medium text-on-surface truncate max-w-[200px]">Uploading...</span>
+            <span id="uploadProgressPercent" class="font-bold text-primary">0%</span>
+          </div>
+          <div class="w-full bg-surface-container-high rounded-full h-1.5 overflow-hidden">
+            <div id="uploadProgressBar" class="bg-primary h-full rounded-full transition-all duration-200" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between mb-2">
+      <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Workspace Files</span>
+      <span id="filesCountBadge" class="text-xs text-on-surface-variant">0 files</span>
+    </div>
 
     <!-- Files Table -->
-    <div id="filesTable" class="mt-4 bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+    <div id="filesTable" class="bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm">
       <table class="w-full">
         <thead class="bg-surface-container-low border-b border-outline-variant">
           <tr>
@@ -101,15 +130,12 @@ tailwind.config = {
 
     <!-- Empty State -->
     <div id="filesEmpty" class="d-none mt-4">
-      <div class="bg-surface-variant/30 rounded-lg border border-dashed border-outline-variant p-xl flex flex-col items-center justify-center gap-md text-center min-h-[300px]">
+      <div class="bg-surface-variant/30 rounded-lg border border-dashed border-outline-variant p-xl flex flex-col items-center justify-center gap-md text-center min-h-[220px]">
         <span class="material-symbols-outlined text-on-surface-variant/40 text-[48px]">folder_open</span>
         <div>
           <h3 class="font-headline-sm text-headline-sm text-on-surface">No files yet</h3>
-          <p class="font-body-md text-body-md text-on-surface-variant mt-xs max-w-[320px] mx-auto">Upload your first file to get started (mock only).</p>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-xs max-w-[320px] mx-auto">Drop files above or click to upload your first document.</p>
         </div>
-        <button class="mt-sm h-11 px-md bg-primary text-on-primary rounded-DEFAULT font-label-sm text-label-sm hover:bg-primary-fixed-variant transition-colors flex items-center gap-sm" id="emptyUploadFileBtn" type="button">
-          <span class="material-symbols-outlined text-[18px]">upload</span> Upload File
-        </button>
       </div>
     </div>
   </div>

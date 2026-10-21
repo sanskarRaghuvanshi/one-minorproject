@@ -80,23 +80,90 @@ tailwind.config = {
   </div>
 
   <div class="p-lg max-w-7xl mx-auto">
-    <!-- Filter Bar -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-lg">
-      <div class="flex bg-surface-container-low rounded-lg p-1 border border-outline-variant/30">
-        <select id="statusFilter" class="bg-surface shadow-sm font-label-sm text-label-sm text-on-surface border border-outline-variant/20 rounded-md px-md py-1.5 focus:outline-none focus:border-primary cursor-pointer">
-          <option value="">All Status</option>
-          <option value="To Do">To Do</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Done">Done</option>
-        </select>
-        <select id="priorityFilter" class="bg-surface shadow-sm font-label-sm text-label-sm text-on-surface border border-outline-variant/20 rounded-md px-md py-1.5 focus:outline-none focus:border-primary cursor-pointer ml-2">
-          <option value="">All Priority</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
+    <!-- Tasks Statistics Summary -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-md mb-md">
+      <div class="bg-surface border border-outline-variant/60 rounded-xl p-md shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-on-surface-variant">Total Tasks</div>
+          <div id="statTotal" class="text-2xl font-bold text-on-surface">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px]">assignment</span>
+        </div>
       </div>
-      <div class="relative flex-1 sm:max-w-xs">
+      <div class="bg-surface border border-outline-variant/60 rounded-xl p-md shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-on-surface-variant">To Do</div>
+          <div id="statToDo" class="text-2xl font-bold text-secondary">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px]">pending_actions</span>
+        </div>
+      </div>
+      <div class="bg-surface border border-outline-variant/60 rounded-xl p-md shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-on-surface-variant">In Progress</div>
+          <div id="statInProgress" class="text-2xl font-bold text-amber-600">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px]">sync</span>
+        </div>
+      </div>
+      <div class="bg-surface border border-outline-variant/60 rounded-xl p-md shadow-sm flex items-center justify-between">
+        <div>
+          <div class="text-xs font-medium text-on-surface-variant">Completed</div>
+          <div id="statDone" class="text-2xl font-bold text-emerald-600">0</div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px]">task_alt</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="bg-surface border border-outline-variant/60 rounded-xl p-md mb-lg shadow-sm">
+      <div class="flex justify-between items-center mb-1 text-xs">
+        <span class="font-medium text-on-surface-variant">Task Completion</span>
+        <span id="statProgressText" class="font-bold text-primary">0% Completed</span>
+      </div>
+      <div class="w-full bg-surface-container-high rounded-full h-2 overflow-hidden">
+        <div id="statProgressBar" class="bg-primary h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Filter & View Switcher Bar -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-lg">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex bg-surface-container-low rounded-lg p-1 border border-outline-variant/30">
+          <select id="statusFilter" class="bg-surface shadow-sm font-label-sm text-label-sm text-on-surface border border-outline-variant/20 rounded-md px-md py-1.5 focus:outline-none focus:border-primary cursor-pointer" aria-label="Status filter">
+            <option value="">All Status</option>
+            <option value="open">Open</option>
+            <option value="To Do">To Do</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+          </select>
+          <select id="priorityFilter" class="bg-surface shadow-sm font-label-sm text-label-sm text-on-surface border border-outline-variant/20 rounded-md px-md py-1.5 focus:outline-none focus:border-primary cursor-pointer ml-2" aria-label="Priority filter">
+            <option value="">All Priority</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <!-- View Switcher Toggle -->
+        <div class="flex items-center gap-1 bg-surface-container-low rounded-lg p-1 border border-outline-variant/30">
+          <button id="viewTableBtn" type="button" class="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors bg-surface text-primary shadow-sm" title="Table View">
+            <span class="material-symbols-outlined text-[16px]">table_rows</span>
+            <span class="hidden sm:inline">Table</span>
+          </button>
+          <button id="viewKanbanBtn" type="button" class="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors text-on-surface-variant hover:text-on-surface" title="Kanban Board View">
+            <span class="material-symbols-outlined text-[16px]">view_kanban</span>
+            <span class="hidden sm:inline">Kanban</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="relative flex-1 sm:max-w-xs w-full">
         <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
         <input class="w-full pl-xl pr-8 py-sm rounded-DEFAULT border border-outline-variant dark:border-outline bg-surface dark:bg-surface-container-low text-on-surface dark:text-inverse-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-md text-body-md transition-shadow placeholder:text-on-surface-variant" id="searchInput" placeholder="Search tasks..." type="search"/>
         <button class="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface" type="button" id="clearSearch">
@@ -105,7 +172,17 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- Tasks Table -->
+    <!-- Empty State -->
+    <div id="tasksEmpty" class="d-none p-xl text-center bg-surface border border-outline-variant rounded-xl shadow-sm mb-lg">
+      <span class="material-symbols-outlined text-on-surface-variant/40 text-[48px] block mb-2">checklist</span>
+      <h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">No tasks found</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant mb-4">Try adjusting your filters or create a new task.</p>
+      <button class="bg-primary hover:bg-primary-container text-on-primary h-[36px] px-md rounded-lg font-headline-sm text-label-sm flex items-center gap-2 transition-colors mx-auto" id="emptyAddTaskBtn" type="button">
+        <span class="material-symbols-outlined text-[18px]">add</span> New Task
+      </button>
+    </div>
+
+    <!-- Tasks Table View -->
     <div id="tasksCard" class="bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm">
       <table class="w-full">
         <thead class="bg-surface-container-low border-b border-outline-variant">
@@ -119,13 +196,53 @@ tailwind.config = {
         </thead>
         <tbody id="tasksBody" class="divide-y divide-outline-variant/50"></tbody>
       </table>
-      <div id="tasksEmpty" class="d-none p-xl text-center">
-        <span class="material-symbols-outlined text-on-surface-variant/40 text-[48px] block mb-2">checklist</span>
-        <h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">No tasks yet</h3>
-        <p class="font-body-md text-body-md text-on-surface-variant mb-4">Create your first task to get started.</p>
-        <button class="bg-primary hover:bg-primary-container text-on-primary h-[36px] px-md rounded-lg font-headline-sm text-label-sm flex items-center gap-2 transition-colors mx-auto" id="emptyAddTaskBtn" type="button">
-          <span class="material-symbols-outlined text-[18px]">add</span> New Task
-        </button>
+    </div>
+
+    <!-- Tasks Kanban View -->
+    <div id="tasksKanban" class="d-none grid grid-cols-1 md:grid-cols-3 gap-md">
+      <!-- To Do Column -->
+      <div class="flex flex-col bg-surface-container-low/70 border border-outline-variant/60 rounded-xl p-md">
+        <div class="flex items-center justify-between mb-md pb-2 border-b border-outline-variant/40">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+            <h4 class="font-headline-sm text-sm font-bold text-on-surface">To Do</h4>
+            <span id="kanbanCountToDo" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-surface border border-outline-variant/50 text-on-surface-variant">0</span>
+          </div>
+          <button type="button" class="add-column-task-btn text-on-surface-variant hover:text-primary transition-colors p-1" data-status="To Do" title="Add To Do task">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+          </button>
+        </div>
+        <div id="kanbanToDo" class="kanban-col space-y-3 flex-1 min-h-[160px]" data-status="To Do"></div>
+      </div>
+
+      <!-- In Progress Column -->
+      <div class="flex flex-col bg-surface-container-low/70 border border-outline-variant/60 rounded-xl p-md">
+        <div class="flex items-center justify-between mb-md pb-2 border-b border-outline-variant/40">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+            <h4 class="font-headline-sm text-sm font-bold text-on-surface">In Progress</h4>
+            <span id="kanbanCountInProgress" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-surface border border-outline-variant/50 text-on-surface-variant">0</span>
+          </div>
+          <button type="button" class="add-column-task-btn text-on-surface-variant hover:text-primary transition-colors p-1" data-status="In Progress" title="Add In Progress task">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+          </button>
+        </div>
+        <div id="kanbanInProgress" class="kanban-col space-y-3 flex-1 min-h-[160px]" data-status="In Progress"></div>
+      </div>
+
+      <!-- Done Column -->
+      <div class="flex flex-col bg-surface-container-low/70 border border-outline-variant/60 rounded-xl p-md">
+        <div class="flex items-center justify-between mb-md pb-2 border-b border-outline-variant/40">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <h4 class="font-headline-sm text-sm font-bold text-on-surface">Done</h4>
+            <span id="kanbanCountDone" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-surface border border-outline-variant/50 text-on-surface-variant">0</span>
+          </div>
+          <button type="button" class="add-column-task-btn text-on-surface-variant hover:text-primary transition-colors p-1" data-status="Done" title="Add Done task">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+          </button>
+        </div>
+        <div id="kanbanDone" class="kanban-col space-y-3 flex-1 min-h-[160px]" data-status="Done"></div>
       </div>
     </div>
   </div>

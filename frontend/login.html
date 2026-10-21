@@ -72,14 +72,14 @@ tailwind.config = {
 
     <form id="loginForm" class="space-y-gutter flex-grow needs-validation" novalidate>
       <div class="flex flex-col gap-xs">
-        <label class="font-label-sm text-label-sm text-on-surface" for="email">Email Address</label>
-        <input class="w-full h-[44px] px-md py-sm bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors" id="email" name="email" placeholder="name@university.edu" type="email" required/>
+        <label class="font-label-sm text-label-sm text-on-surface" for="identifier">Email or username</label>
+        <input class="w-full h-[44px] px-md py-sm bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors" id="identifier" name="email" placeholder="name@university.edu or username" type="text" autocomplete="username" required/>
         <div class="invalid-feedback text-error text-xs">Please enter a valid email address.</div>
       </div>
       <div class="flex flex-col gap-xs">
         <div class="flex justify-between items-center">
           <label class="font-label-sm text-label-sm text-on-surface" for="password">Password</label>
-          <a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Forgot password?</a>
+          <a class="font-label-sm text-label-sm text-primary hover:underline" href="#" onclick="event.preventDefault(); showForgotPasswordNotice()">Forgot password?</a>
         </div>
         <div class="relative">
           <input class="w-full h-[44px] px-md py-sm pr-12 bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors" id="password" name="password" placeholder="Enter your password" type="password" required minlength="6"/>
@@ -104,11 +104,13 @@ tailwind.config = {
       Don't have an account? <a class="font-label-sm text-label-sm text-primary hover:underline font-medium" href="register.html">Sign up</a>
     </p>
   </div>
-</div>
+<div id="toast-container" class="fixed bottom-20 md:bottom-8 right-4 z-[200] flex flex-col gap-sm"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/mock-data.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/api.js"></script>
 <script src="js/login.js"></script>
 </body>
 </html>

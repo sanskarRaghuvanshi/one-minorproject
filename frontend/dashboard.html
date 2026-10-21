@@ -68,6 +68,21 @@ tailwind.config = {
       <h1 class="font-display-lg text-display-lg text-on-surface" id="workspaceTitle">Dashboard</h1>
       <p class="font-body-md text-body-md text-on-surface-variant mt-1" id="workspaceDescription"></p>
     </div>
+    <!-- Quick Actions Bar -->
+    <div class="flex flex-wrap items-center gap-2">
+      <a href="#" data-nav="tasks" class="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary text-on-primary font-semibold text-xs hover:bg-primary-container transition-colors shadow-sm">
+        <span class="material-symbols-outlined text-[16px]">add_task</span> New Task
+      </a>
+      <a href="#" data-nav="notes" class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-outline-variant bg-surface hover:bg-surface-container-low text-on-surface font-medium text-xs transition-colors">
+        <span class="material-symbols-outlined text-[16px]">note_add</span> New Note
+      </a>
+      <a href="#" data-nav="files" class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-outline-variant bg-surface hover:bg-surface-container-low text-on-surface font-medium text-xs transition-colors">
+        <span class="material-symbols-outlined text-[16px]">upload_file</span> Upload
+      </a>
+      <a href="#" data-nav="compiler" class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-outline-variant bg-surface hover:bg-surface-container-low text-on-surface font-medium text-xs transition-colors">
+        <span class="material-symbols-outlined text-[16px]">code</span> Compiler
+      </a>
+    </div>
   </header>
 
   <!-- Summary Stats Row -->
@@ -75,10 +90,10 @@ tailwind.config = {
 
   <!-- Two Column Layout -->
   <section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter flex-1 items-start">
-    <!-- Left Column -->
-    <div class="lg:col-span-8 flex flex-col gap-gutter">
+    <!-- Left Column: Recent Items -->
+    <div class="lg:col-span-7 flex flex-col gap-gutter">
       <!-- Recent Tasks -->
-      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md">
+      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md shadow-sm">
         <div class="flex items-center justify-between border-b border-outline-variant pb-sm">
           <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-sm">
             <span class="material-symbols-outlined text-primary">event_upcoming</span> Recent Tasks
@@ -89,10 +104,10 @@ tailwind.config = {
       </div>
 
       <!-- Recent Notes -->
-      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md">
+      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md shadow-sm">
         <div class="flex items-center justify-between border-b border-outline-variant pb-sm">
           <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-sm">
-            <span class="material-symbols-outlined text-tertiary">description</span> Recent Notes
+            <span class="material-symbols-outlined text-amber-600">description</span> Recent Notes
           </h2>
           <a href="#" class="text-primary font-label-sm text-label-sm hover:underline" data-nav="notes">View All</a>
         </div>
@@ -100,7 +115,7 @@ tailwind.config = {
       </div>
 
       <!-- Recent Resources -->
-      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md">
+      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md shadow-sm">
         <div class="flex items-center justify-between border-b border-outline-variant pb-sm">
           <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-sm">
             <span class="material-symbols-outlined text-secondary">bookmark</span> Recent Resources
@@ -111,10 +126,10 @@ tailwind.config = {
       </div>
 
       <!-- Recent Files -->
-      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md">
+      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md shadow-sm">
         <div class="flex items-center justify-between border-b border-outline-variant pb-sm">
           <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-sm">
-            <span class="material-symbols-outlined" style="color: #4f46e5;">folder</span> Recent Files
+            <span class="material-symbols-outlined text-primary">folder</span> Recent Files
           </h2>
           <a href="#" class="text-primary font-label-sm text-label-sm hover:underline" data-nav="files">View All</a>
         </div>
@@ -122,12 +137,94 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- Right Column -->
-    <div class="lg:col-span-4 flex flex-col gap-gutter">
-      <!-- Recent Activity -->
-      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md">
-        <h2 class="font-headline-sm text-headline-sm text-on-surface border-b border-outline-variant pb-sm">Recent Activity</h2>
-        <div id="recentActivityList" class="relative pl-6 flex flex-col gap-lg before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant"></div>
+    <!-- Right Column: Visual Analytics & Timeline -->
+    <div class="lg:col-span-5 flex flex-col gap-gutter">
+      <!-- Visual Analytics Widget -->
+      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md shadow-sm">
+        <div class="flex items-center justify-between border-b border-outline-variant pb-sm">
+          <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-sm">
+            <span class="material-symbols-outlined text-primary">insights</span> Visual Analytics
+          </h2>
+          <span class="text-xs text-on-surface-variant font-medium">Real-Time</span>
+        </div>
+
+        <!-- Circular Completion Progress & Status Breakdown -->
+        <div class="flex flex-col sm:flex-row items-center gap-lg py-2">
+          <!-- Circular Gauge Ring -->
+          <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="10" class="text-surface-container-high"></circle>
+              <circle id="analyticsProgressRing" cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" class="text-primary transition-all duration-700 ease-out"></circle>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+              <span id="analyticsPercent" class="text-2xl font-bold text-on-surface">0%</span>
+              <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Done</span>
+            </div>
+          </div>
+
+          <!-- Status Distribution Tiles -->
+          <div class="flex-1 w-full space-y-2">
+            <div class="flex items-center justify-between text-xs p-2 rounded-lg bg-surface-container-low/70 border border-outline-variant/30">
+              <span class="flex items-center gap-2 font-medium text-on-surface">
+                <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span> To Do
+              </span>
+              <span id="analyticsCountToDo" class="font-bold text-secondary">0</span>
+            </div>
+            <div class="flex items-center justify-between text-xs p-2 rounded-lg bg-surface-container-low/70 border border-outline-variant/30">
+              <span class="flex items-center gap-2 font-medium text-on-surface">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> In Progress
+              </span>
+              <span id="analyticsCountInProgress" class="font-bold text-amber-600">0</span>
+            </div>
+            <div class="flex items-center justify-between text-xs p-2 rounded-lg bg-surface-container-low/70 border border-outline-variant/30">
+              <span class="flex items-center gap-2 font-medium text-on-surface">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Completed
+              </span>
+              <span id="analyticsCountDone" class="font-bold text-emerald-600">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Priority Distribution Stacked Bar -->
+        <div class="pt-2 border-t border-outline-variant/40">
+          <div class="flex justify-between items-center mb-1.5 text-xs">
+            <span class="font-medium text-on-surface-variant">Task Priority Breakdown</span>
+            <span id="analyticsPrioritySummary" class="text-[11px] text-on-surface-variant/80">0 Tasks</span>
+          </div>
+          <div class="w-full h-2.5 rounded-full bg-surface-container-high flex overflow-hidden mb-2">
+            <div id="barPriorityHigh" class="bg-rose-500 h-full transition-all duration-500" style="width: 0%" title="High"></div>
+            <div id="barPriorityMedium" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%" title="Medium"></div>
+            <div id="barPriorityLow" class="bg-sky-500 h-full transition-all duration-500" style="width: 0%" title="Low"></div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-on-surface-variant">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span> High: <strong id="countPriorityHigh">0</strong></span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Med: <strong id="countPriorityMedium">0</strong></span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-500"></span> Low: <strong id="countPriorityLow">0</strong></span>
+          </div>
+        </div>
+
+        <!-- Storage & Notes Quick Footprint -->
+        <div class="pt-2 border-t border-outline-variant/40 grid grid-cols-2 gap-2 text-xs">
+          <div class="p-2 rounded-lg bg-surface-container-low/50 border border-outline-variant/30">
+            <div class="text-[10px] uppercase font-semibold text-on-surface-variant">Total Storage</div>
+            <div id="analyticsStorageSize" class="text-sm font-bold text-on-surface mt-0.5">0 B</div>
+          </div>
+          <div class="p-2 rounded-lg bg-surface-container-low/50 border border-outline-variant/30">
+            <div class="text-[10px] uppercase font-semibold text-on-surface-variant">Knowledge Items</div>
+            <div id="analyticsKnowledgeCount" class="text-sm font-bold text-on-surface mt-0.5">0 items</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity Feed -->
+      <div class="bg-surface rounded-xl border border-outline-variant p-lg flex flex-col gap-md shadow-sm">
+        <div class="flex items-center justify-between border-b border-outline-variant pb-sm">
+          <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-sm">
+            <span class="material-symbols-outlined text-secondary">history</span> Recent Activity
+          </h2>
+          <span class="text-xs text-on-surface-variant font-medium">Timeline</span>
+        </div>
+        <div id="recentActivityList" class="flex flex-col gap-3"></div>
       </div>
     </div>
   </section>

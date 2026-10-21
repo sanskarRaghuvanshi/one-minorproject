@@ -11,8 +11,10 @@ Usage:
 import http.server
 import functools
 import os
+import socket
 import socketserver
 import sys
+import errno
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_PORT = 8080
@@ -26,6 +28,10 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
 
+class ReusableTCPServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
+
 def main():
     port = DEFAULT_PORT
     if len(sys.argv) > 1:
@@ -36,7 +42,7 @@ def main():
 
     handler = functools.partial(QuietHandler)
     try:
-        with socketserver.TCPServer(("", port), handler) as httpd:
+        with ReusableTCPServer(("", port), handler) as httpd:
             print("=" * 56)
             print("OneSpace frontend is running at:")
             print("  http://localhost:%d" % port)
@@ -46,7 +52,7 @@ def main():
             print("=" * 56)
             httpd.serve_forever()
     except OSError as exc:
-        if exc.errno == 10048:
+        if exc.errno == errno.EADDRINUSE:
             print("Error: port %d is already in use." % port)
             print("Try a different port, e.g.  python serve.py 5500")
         else:

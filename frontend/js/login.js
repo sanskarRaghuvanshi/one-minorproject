@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const form = document.getElementById("loginForm");
-  const emailInput = document.getElementById("email");
+  const identifierInput = document.getElementById("identifier");
   const passwordInput = document.getElementById("password");
   const toggleBtn = document.getElementById("togglePassword");
   const toggleIcon = toggleBtn.querySelector("i");
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     hideError();
 
     try {
-      const result = await window.OneSpaceAuth.login(emailInput.value, passwordInput.value);
+      const result = await window.OneSpaceAuth.login(identifierInput.value, passwordInput.value);
       if (result && result.success) {
         window.OneSpaceUtils.showSuccess("Welcome back!");
         window.setTimeout(function () {
@@ -64,5 +64,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function hideError() {
     errorAlert.classList.add("d-none");
     errorAlert.textContent = "";
+  }
+
+  function showForgotPasswordNotice() {
+    showError("Forgot password is not available yet.");
   }
 });

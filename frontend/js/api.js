@@ -631,6 +631,7 @@ async function requestJson(path, method, body = null, useFormData = false) {
   const headers = {};
   const token = window.OneSpaceAuth ? window.OneSpaceAuth.getToken() : "";
   let payload = body;
+  const isLoginRequest = path.includes("/api/auth/login/");
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;
@@ -655,6 +656,13 @@ async function requestJson(path, method, body = null, useFormData = false) {
   }
 
   if (!response.ok) {
+    // On 401 (invalid/expired token), clear auth and redirect to login
+    // except during the login request itself to avoid redirect loops
+    if (response.status === 401 && !isLoginRequest) {
+      window.OneSpaceAuth.clearToken();
+      window.location.replace("login.html");
+    }
+
     const message = responseData && responseData.message ? responseData.message : "The request could not be completed.";
     throw new Error(message);
   }

@@ -1,236 +1,73 @@
 # OneSpace Frontend
 
-A centralized, project‑based **work‑context management** web application built entirely with **HTML5, CSS3, and vanilla JavaScript (ES6+)**. No build tools, no frameworks, no backend – all data is persisted in `localStorage` via a clean API layer that can later be swapped for a real Django REST Framework backend.
+## Overview
 
----
+OneSpace is a plain HTML/vanilla JavaScript application using Tailwind CSS via CDN (not Bootstrap CSS). It's a workspace-based product management app with tasks, notes, resources, files, and saved compiler programs (snippets).
 
-## Features
+## Technologies
 
-- **Mock authentication** (login / register / logout) with token stored in `localStorage`.
-- **Workspaces**: create, list, archive, delete (cascades to child resources).
-- **Tasks**: full CRUD, status/priority/due‑date, inline status change, filters, search.
-- **Notes**: rich cards with title/body, timestamps, edit/delete.
-- **Resources**: title, URL, description, open in new tab, validation.
-- **Files**: mock upload (file picker captures name/size only), list, delete, download disabled with tooltip.
-- **Compiler**: write and run Python in the browser (Pyodide, loaded on demand from CDN) with stdout/stderr capture, error traces, and Ctrl/Cmd + Enter.
-- **Saved programs**: name, save, load, rename, and delete programs per workspace from a dropdown on the Compiler page; unsaved changes prompt before leaving.
-- **Dashboard**: summary cards, recent items per module, recent activity feed.
-- **Global search**: debounced, case‑insensitive across tasks, notes, resources, files; grouped results with navigation.
-- **Responsive UI**: works on mobile, tablet, desktop; Bootstrap 5 components throughout.
-- **Accessibility**: labels on every input, `aria-label` on icon‑only buttons, focus trapping in modals (Bootstrap default), colour + text for status.
-- **Loading / empty / error / success states** on every async operation.
+- **HTML/CSS/JS**: Vanilla JavaScript (ES6+), HTML5, CSS3
+- **Styling**: Tailwind CSS (CDN) + custom CSS
+- **Icons**: Material Symbols Outlined
+- **Network**: `fetch` API, JSON payloads
+- **Storage (mock)**: Browser `localStorage`
+- **Authentication**: Bearer token sent as `Authorization` header
 
----
+No build tools, no npm, no framework. Files are loaded via plain `<script>` tags.
 
-## Technology Stack
+## Configuration
 
-| Layer | Choice |
-|-------|--------|
-| Markup | HTML5 |
-| Styling | CSS3 + **Bootstrap 5.3** (CDN) + **Bootstrap Icons** (CDN) |
-| Scripting | Vanilla **JavaScript ES6+** (no modules, plain `<script>` tags) |
-| Persistence | `localStorage` (seeded once from `mock-data.js`) |
-| Build / bundler | **None** – serve statically via `python serve.py` and visit http://localhost:8080 |
+The switch is in `js/config.js`:
 
----
-
-## Folder Structure
-
-```
-onespace-frontend/
-├── login.html
-├── register.html
-├── workspaces.html
-├── dashboard.html
-├── tasks.html
-├── notes.html
-├── resources.html
-├── files.html
-├── search.html
-├── compiler.html
-├── README.md
-├── css/
-│   ├── style.css
-│   ├── auth.css
-│   └── dashboard.css
-├── js/
-│   ├── config.js
-│   ├── utils.js
-│   ├── mock-data.js
-│   ├── auth.js
-│   ├── api.js
-│   ├── login.js
-│   ├── register.js
-│   ├── workspaces.js
-│   ├── dashboard.js
-│   ├── tasks.js
-│   ├── notes.js
-│   ├── resources.js
-│   ├── files.js
-│   ├── search.js
-│   └── compiler.js
-└── assets/
+```js
+window.OneSpaceConfig = {
+  API_BASE_URL: "",      // e.g. "http://localhost:8000"
+  USE_MOCK_DATA: true    // change to false to hit the real backend
+};
 ```
 
----
+- `USE_MOCK_DATA: true` → all reads/writes go to `localStorage`.
+- `USE_MOCK_DATA: false` → every call is a real `fetch` to the backend.
 
-## How to Run
+## API Base URL
 
-1. Clone or download this folder.
-2. Start the local frontend server (requires Python 3, already installed on most systems):
-   ```bash
-   python serve.py
-   ```
-3. Open **http://localhost:8080** in your browser — it takes you straight to the login page.
-   - Custom port: `python serve.py 5500` → http://localhost:5500
-4. Log in with the seeded credentials:
-   - **Email:** `demo@onespace.test` **Password:** `demo123`
-   - **Email:** `alex@onespace.test` **Password:** `alex123`
-5. Or click **"Create one"** to register a new account.
+Set `API_BASE_URL` in `js/config.js` to match your backend URL, for example:
+- `http://localhost:8080` (frontend dev server)
+- `http://127.0.0.1:8000` (backend API)
 
-All data is stored in your browser’s `localStorage` under the keys listed below.
+## Mock Mode vs Real Mode
 
----
+- **`USE_MOCK_DATA: true`** (default): All data operations use browser `localStorage`. The mock data seed runs automatically on first login. This is the default mode and requires no backend setup.
 
-## Mock Authentication
+- **`USE_MOCK_DATA: false`**: All data operations go to the real backend API. Requires:
+  1. Backend running (`uvicorn app.main:app --reload`)
+  2. `API_BASE_URL` set in `js/config.js`
+  3. User registration and login via the real API
 
-- `OneSpaceAuth.login(identifier, password)` validates against the seeded users, generates a token like `mock-token-<timestamp>-<random>`, stores it in `localStorage` (`onespace_auth`), and redirects to `workspaces.html`.
-- `OneSpaceAuth.isAuthenticated()` checks for the token.
-- Guarded pages (`workspaces.html`, `dashboard.html`, …) call `OneSpaceAuth.requireAuth()` on load; missing token redirects to `login.html`.
-- **This is explicitly mock authentication** – no hashing, no secure transport. UI copy never claims real security.
+## Running the Frontend
 
----
+ simply open `index.html` in a browser, or serve the `frontend/` directory with any static HTTP server:
 
-## Mock Data & `localStorage` Behaviour
-
-On first load each collection key is checked; if absent it is seeded from `js/mock-data.js`. **Existing data is never overwritten.**
-
-| Key | Seeded from | Description |
-|-----|-------------|-------------|
-| `onespace_users` | `mock-data.js` → `users` | `id, name, email, password` |
-| `onespace_workspaces` | `workspaces` | `id, name, description, created_at, updated_at, archived` |
-| `onespace_tasks` | `tasks` | `id, workspace_id, title, description, status, priority, due_date, created_at, updated_at` |
-| `onespace_notes` | `notes` | `id, workspace_id, title, body, created_at, updated_at` |
-| `onespace_resources` | `resources` | `id, workspace_id, title, url, description, created_at, updated_at` |
-| `onespace_files` | `files` | `id, workspace_id, filename, upload_date, size` |
-| `onespace_snippets` | — (not seeded; created on first save) | `id, workspace_id, title, language, code, created_at, updated_at` |
-| `onespace_activity` | `activity` | `id, workspace_id, type, message, timestamp` |
-| `onespace_auth` | created on login | `token, userId, userEmail, createdAt` |
-
-All CRUD operations read/write these keys via `OneSpaceAPI` – **page scripts never touch `localStorage` directly**.
-
----
-
-## Page‑by‑Page Description
-
-| Page | Purpose | Key Interactions |
-|------|---------|------------------|
-| `login.html` | Email/username + password → token → `workspaces.html` | Enter submits, toggle password visibility, validation |
-| `register.html` | Name, email, password, confirm → creates user → redirect to login | Duplicate email check, password match, password toggle |
-| `workspaces.html` | Card grid of workspaces; create/archive/delete modals | Open → `dashboard.html?workspace_id=…` |
-| `dashboard.html` | Summary cards, recent tasks/notes/resources/files/activity | All links preserve `workspace_id` |
-| `tasks.html` | Table with filters, inline status select, add/edit modal, delete | Quick status change, search, priority badges |
-| `notes.html` | Cards with preview, add/edit/delete modals | Full body on edit, timestamps |
-| `resources.html` | Cards with link button, add/edit/delete modals | URL validation, `target="_blank" rel="noopener noreferrer"` |
-| `files.html` | Table, mock upload (file picker), delete, download disabled | Shows “Download unavailable in mock mode” tooltip |
-| `search.html` | Single input, debounced, grouped results, navigation | Highlights matches, empty state |
-| `compiler.html` | Code editor + output panel for running Python | Language select, Run (Pyodide), saved‑programs dropdown, Save/Rename/Delete, unsaved‑changes prompt on exit |
-
----
-
-## Architecture – `OneSpaceAPI` Isolation Pattern
-
-```
-Page script (e.g. tasks.js)
-        │
-        ▼
-OneSpaceAPI.getTasks(workspaceId)   ◄───►  OneSpaceAPI.updateTask(...)
-        │                                    (all methods return Promises)
-        ▼
-┌─────────────────────────────────────────┐
-│  OneSpaceConfig.USE_MOCK_DATA = true   │
-│  (config.js)                            │
-└─────────────────────────────────────────┘
-        │
-        ▼
-Mock implementation reads/writes localStorage
-        │
-        ▼
-Returns cloned data → UI updates
+```bash
+cd frontend
+python -m http.server 8080
+# Then open http://localhost:8080 in your browser
 ```
 
-**Future swap:** set `OneSpaceConfig.USE_MOCK_DATA = false` and implement the real `fetch` branches inside `api.js` (already stubbed). No page script changes required.
+## Authentication
 
----
+- Register: `POST /api/auth/register/` (real mode) or uses mock data (mock mode)
+- Login: `POST /api/auth/login/` (real mode) or uses mock data (mock mode)
+- Token stored in `localStorage` under key `onespace_auth` as JSON: `{token, userId, userName, userEmail, createdAt}`
+- Protected routes require `Authorization: Bearer <token>` header
 
-## Future Django REST API Contract
+## Known Limitations
 
-All endpoints require authentication (`Authorization: Bearer <token>`). Responses follow a consistent envelope:
+- Frontend uses mock localStorage mode by default; backend setup required for real mode
+- File uploads in real mode are limited to 10 MB
+- Pyodide compiler runs in the main thread (may cause UI freeze on complex programs)
+- Some advanced features (compiler timeouts, Web Worker Pyodide) are works in progress
 
-**Success**
-```json
-{ "success": true, "data": { … }, "message": "Optional human‑readable message" }
-```
+## API Response/Error Format
 
-**Error**
-```json
-{ "success": false, "message": "Human readable error", "errors": { "field": "detail" } }
-```
-
-### Authentication
-| Method | Path | Purpose | Request | Success Response |
-|--------|------|---------|---------|------------------|
-| POST | `/api/auth/login/` | Obtain token | `{ "email": "…", "password": "…" }` | `{ "success": true, "data": { "token": "…", "user": { "id": "…", "name": "…", "email": "…" } } }` |
-| POST | `/api/auth/register/` | Create account | `{ "name": "…", "email": "…", "password": "…", "password_confirm": "…" }` | `{ "success": true, "data": { "user": { … } }, "message": "Account created" }` |
-| POST | `/api/auth/logout/` | Invalidate token (optional) | `{}` | `{ "success": true, "message": "Logged out" }` |
-
-### Workspaces
-| Method | Path | Purpose | Request | Success Response |
-|--------|------|---------|---------|------------------|
-| GET | `/api/workspaces/` | List all workspaces | – | `{ "success": true, "data": [ { "id", "name", "description", "created_at", "updated_at", "archived" } ] }` |
-| POST | `/api/workspaces/` | Create workspace | `{ "name": "…", "description": "…" }` | `{ "success": true, "data": { workspace object } }` |
-| GET | `/api/workspaces/{id}/` | Retrieve workspace | – | `{ "success": true, "data": { workspace object } }` |
-| PATCH | `/api/workspaces/{id}/` | Update workspace | `{ "name"?, "description"?, "archived"? }` | `{ "success": true, "data": { updated workspace } }` |
-| POST | `/api/workspaces/{id}/archive/` | Archive workspace | `{}` | `{ "success": true, "data": { archived workspace } }` |
-| DELETE | `/api/workspaces/{id}/` | Delete workspace (cascades) | – | `{ "success": true, "message": "Workspace deleted" }` |
-
-### Tasks (scoped to workspace)
-| Method | Path | Purpose | Request | Success Response |
-|--------|------|---------|---------|------------------|
-| GET | `/api/workspaces/{workspace_id}/tasks/` | List tasks | Query: `status`, `priority`, `search` | `{ "success": true, "data": [ task objects ] }` |
-| POST | `/api/workspaces/{workspace_id}/tasks/` | Create task | `{ "title": "…", "description"?, "status"?, "priority"?, "due_date"?, }` | `{ "success": true, "data": { task object } }` |
-| GET | `/api/workspaces/{workspace_id}/tasks/{id}/` | Retrieve task | – | `{ "success": true, "data": { task object } }` |
-| PATCH | `/api/workspaces/{workspace_id}/tasks/{id}/` | Update task | Partial task fields | `{ "success": true, "data": { updated task } }` |
-| DELETE | `/api/workspaces/{workspace_id}/tasks/{id}/` | Delete task | – | `{ "success": true, "message": "Task deleted" }` |
-
-*(Notes, Resources, Files follow identical CRUD pattern under `/api/workspaces/{workspace_id}/notes/`, `/resources/`, `/files/`. Saved compiler programs follow it too under `/api/workspaces/{workspace_id}/snippets/` — see `BACKEND_HANDOFF.md` §5.9.)*
-
-### Files
-| Method | Path | Purpose | Request | Success Response |
-|--------|------|---------|---------|------------------|
-| GET | `/api/workspaces/{workspace_id}/files/` | List files | – | `{ "success": true, "data": [ file metadata ] }` |
-| POST | `/api/workspaces/{workspace_id}/files/` | Upload file (multipart) | `file` + optional fields | `{ "success": true, "data": { file metadata } }` |
-| GET | `/api/workspaces/{workspace_id}/files/{id}/download/` | Download file | – | Binary file stream |
-| DELETE | `/api/workspaces/{workspace_id}/files/{id}/` | Delete file | – | `{ "success": true, "message": "File deleted" }` |
-
-### Search & Activity
-| Method | Path | Purpose | Query Params | Success Response |
-|--------|------|---------|--------------|------------------|
-| GET | `/api/workspaces/{workspace_id}/search/` | Global search | `q` (string) | `{ "success": true, "data": { "tasks": [], "notes": [], "resources": [], "files": [] } }` |
-| GET | `/api/workspaces/{workspace_id}/activity/` | Recent activity | `limit?` | `{ "success": true, "data": [ activity objects ] }` |
-
----
-
-## Switching to the Real Backend
-
-1. Set `OneSpaceConfig.USE_MOCK_DATA = false` in `js/config.js`.
-2. Set `OneSpaceConfig.API_BASE_URL` to your Django API root (e.g. `"https://api.example.com"`).
-3. The stubbed `fetch` branches in `api.js` already construct the correct endpoints and include the Bearer token.
-4. Ensure your Django REST endpoints match the contract above (or adjust the `requestJson` paths in `api.js`).
-5. No changes to any page‑level script (`*.js` except `api.js`) are required.
-
----
-
-## License
-
-MIT – feel free to use for your college mini‑project.
+Successful responses return the entity directly or wrapped in a `data` key. Non-2xx responses use `{ "message": "human-readable explanation", "errors": {...} }`. Missing/expired tokens return HTTP 401.

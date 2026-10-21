@@ -14,14 +14,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("dashboardLink").href = `dashboard.html?workspace_id=${encodeURIComponent(workspaceId)}`;
   document.getElementById("backDashboard").href = `dashboard.html?workspace_id=${encodeURIComponent(workspaceId)}`;
 
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async function () {
-      await window.OneSpaceAuth.logout();
-      window.location.replace("login.html");
-    });
-  }
-
   const resourcesContainer = document.getElementById("resourcesContainer");
   const resourcesEmpty = document.getElementById("resourcesEmpty");
   const addResourceBtn = document.getElementById("addResourceBtn");
@@ -57,6 +49,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
     resourcesEmpty.classList.add("d-none");
+    resourcesEmpty.classList.add("hidden");
     resourcesContainer.innerHTML = allResources.map(function (r) {
       const safeUrl = r.url && /^https?:\/\//i.test(r.url) ? r.url : (r.url ? `https://${r.url}` : "#");
       return `
@@ -107,8 +100,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     resourceForm.reset();
     resourceForm.classList.remove("was-validated");
     resourceIdInput.value = resource.id;
-    resourceTitleInput.value = resource.title;
-    resourceUrlInput.value = resource.url;
+    resourceTitleInput.value = resource.title || "";
+    resourceUrlInput.value = resource.url || "";
     resourceDescriptionInput.value = resource.description || "";
     modalLabel.textContent = "Edit Resource";
     resourceModal.show();

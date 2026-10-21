@@ -1,0 +1,26 @@
+# Environment Variables
+.env
+backend/.env
+*.env
+
+# Python Cache & Testing
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+backend/*.log
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary backups
+backup/
+*.backup

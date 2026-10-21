@@ -14,14 +14,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("dashboardLink").href = `dashboard.html?workspace_id=${encodeURIComponent(workspaceId)}`;
   document.getElementById("backDashboard").href = `dashboard.html?workspace_id=${encodeURIComponent(workspaceId)}`;
 
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async function () {
-      await window.OneSpaceAuth.logout();
-      window.location.replace("login.html");
-    });
-  }
-
   const notesContainer = document.getElementById("notesContainer");
   const notesEmpty = document.getElementById("notesEmpty");
   const addNoteBtn = document.getElementById("addNoteBtn");
@@ -56,8 +48,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
     notesEmpty.classList.add("d-none");
+    notesEmpty.classList.add("hidden");
     notesContainer.innerHTML = allNotes.map(function (n) {
-      const preview = window.OneSpaceUtils.escapeHtml(n.body).substring(0, 200) + (n.body.length > 200 ? "…" : "");
+      const bodyText = n.body || "";
+      const preview = window.OneSpaceUtils.escapeHtml(bodyText).substring(0, 200) + (bodyText.length > 200 ? "…" : "");
       return `
         <div class="card bg-surface border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
           <div class="card-body p-lg flex flex-col flex-grow">
@@ -101,8 +95,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     noteForm.reset();
     noteForm.classList.remove("was-validated");
     noteIdInput.value = note.id;
-    noteTitleInput.value = note.title;
-    noteBodyInput.value = note.body;
+    noteTitleInput.value = note.title || "";
+    noteBodyInput.value = note.body || "";
     modalLabel.textContent = "Edit Note";
     noteModal.show();
   }

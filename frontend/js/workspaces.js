@@ -9,16 +9,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const createSubmit = document.getElementById("createWorkspaceSubmit");
   const createBtnText = createSubmit.querySelector(".btn-text");
   const createBtnLoading = createSubmit.querySelector(".btn-loading");
-  const logoutBtn = document.getElementById("logoutBtn");
   const createModalEl = document.getElementById("createWorkspaceModal");
-  const createModal = new bootstrap.Modal(createModalEl);
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async function () {
-      await window.OneSpaceAuth.logout();
-      window.location.replace("login.html");
-    });
-  }
+  const createModal = (window.bootstrap && bootstrap.Modal) ? bootstrap.Modal.getOrCreateInstance(createModalEl) : null;
 
   createForm.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -36,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         description: createDescInput.value.trim()
       });
       window.OneSpaceUtils.showSuccess("Workspace created");
-      createModal.hide();
+      if (createModal) createModal.hide();
       createForm.reset();
       createForm.classList.remove("was-validated");
       renderWorkspaces();
@@ -47,10 +39,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   });
 
-  createModalEl.addEventListener("hidden.bs.modal", function () {
-    createForm.reset();
-    createForm.classList.remove("was-validated");
-  });
+  if (createModalEl) {
+    createModalEl.addEventListener("hidden.bs.modal", function () {
+      createForm.reset();
+      createForm.classList.remove("was-validated");
+    });
+  }
 
   async function renderWorkspaces() {
     try {
