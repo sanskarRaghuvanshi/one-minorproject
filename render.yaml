@@ -4,7 +4,7 @@ services:
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: python run_server.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
@@ -21,4 +21,4 @@ services:
       - key: USE_MOCK_DATA
         value: "false"
       - key: CORS_ORIGINS
-        value: "http://localhost:3000,http://localhost:8080,http://127.0.0.1:8080"
+        value: "https://frontend-ashen-tau-13.vercel.app,http://localhost:8080,http://127.0.0.1:8080,http://localhost:3000"
