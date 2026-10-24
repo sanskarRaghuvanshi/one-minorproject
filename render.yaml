@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: onespace-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: MONGODB_URI
+        sync: false
+      - key: DATABASE_NAME
+        value: onespace_db
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 1440
+      - key: USE_MOCK_DATA
+        value: "false"
+      - key: CORS_ORIGINS
+        value: "http://localhost:3000,http://localhost:8080,http://127.0.0.1:8080"

@@ -642,11 +642,19 @@ async function requestJson(path, method, body = null, useFormData = false) {
     payload = JSON.stringify(body);
   }
 
-  const response = await fetch(`${window.OneSpaceConfig.API_BASE_URL}${path}`, {
-    method,
-    headers,
-    body: payload
-  });
+  let response;
+  try {
+    response = await fetch(`${window.OneSpaceConfig.API_BASE_URL}${path}`, {
+      method,
+      headers,
+      body: payload
+    });
+  } catch (netErr) {
+    console.error("Network / API Error:", netErr);
+    throw new Error(
+      "Unable to connect to backend server. If running on Render free tier, it may be waking up from sleep (~30-50 seconds). Please try again in a moment."
+    );
+  }
 
   let responseData = null;
   try {

@@ -14,8 +14,9 @@ JWT_SECRET = os.environ.get("JWT_SECRET", "this-is-a-very-secret-key-at-least-32
 JWT_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRE_MINUTES", "1440"))
 
 # CORS - parse from env string
-_cors_origins_str = os.environ.get("CORS_ORIGINS", "http://localhost:8080,http://127.0.0.1:8080")
-CORS_ORIGINS = [s.strip() for s in _cors_origins_str.split(",")]
+_cors_origins_str = os.environ.get("CORS_ORIGINS", "http://localhost:8080,http://127.0.0.1:8080,http://localhost:3000")
+CORS_ORIGINS = [s.strip() for s in _cors_origins_str.split(",") if s.strip()]
+CORS_ORIGIN_REGEX = os.environ.get("CORS_ORIGIN_REGEX", r"^https:\/\/.*\.vercel\.app$")
 
 
 # Set the settings object for import compatibility
@@ -25,6 +26,7 @@ class Settings:
     JWT_SECRET = JWT_SECRET
     JWT_EXPIRE_MINUTES = JWT_EXPIRE_MINUTES
     CORS_ORIGINS = CORS_ORIGINS
+    CORS_ORIGIN_REGEX = CORS_ORIGIN_REGEX
     MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
 
 

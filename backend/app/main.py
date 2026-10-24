@@ -58,13 +58,19 @@ app = FastAPI(
 )
 
 # CORS configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS if settings.CORS_ORIGINS else ["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+cors_kwargs = {
+    "allow_credentials": True,
+    "allow_methods": ["*"],
+    "allow_headers": ["*"],
+}
+if getattr(settings, "CORS_ORIGIN_REGEX", None):
+    cors_kwargs["allow_origin_regex"] = settings.CORS_ORIGIN_REGEX
+if getattr(settings, "CORS_ORIGINS", None):
+    cors_kwargs["allow_origins"] = settings.CORS_ORIGINS
+else:
+    cors_kwargs["allow_origins"] = ["*"]
+
+app.add_middleware(CORSMiddleware, **cors_kwargs)
 
 
 # Exception handlers
@@ -89,6 +95,18 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         status_code=422,
         content={"message": msg, "errors": errors},
     )
+
+
+# Root endpoint
+@app.get("/", tags=["root"])
+async def root():
+    return {
+        "name": "OneSpace Backend API",
+        "status": "online",
+        "documentation": "/docs",
+        "health": "/health",
+        "frontend": "http://localhost:8080"
+    }
 
 
 # Health check endpoints
