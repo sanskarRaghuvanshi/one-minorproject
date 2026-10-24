@@ -105,7 +105,7 @@ async def root():
         "status": "online",
         "documentation": "/docs",
         "health": "/health",
-        "frontend": "http://localhost:8080"
+        "frontend": "https://frontend-ashen-tau-13.vercel.app"
     }
 
 
